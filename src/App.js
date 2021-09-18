@@ -32,6 +32,7 @@ const App = () =>{
 
     const [typedKeys, setTypedKeys] = useState([])
     const [validKeys, setValidKeys] = useState([])
+    const [completedWords, setCompletedWords] = useState([])
     
     const [word, setWord] = useState('')
 
@@ -39,6 +40,24 @@ const App = () =>{
         setWord(getWords())
     }, [])
 
+    useEffect(() => {
+        const worFromValidKeys = validKeys.join('').toLowerCase();
+        if(word && word === worFromValidKeys){
+            //Add word ao completedWords ok 
+            //limpar o arrayValidKeys ok
+            //buscar uma nova palavra
+            //verificar se essa proxima lavra nao é repetida
+            let newWord = null;
+            do{
+                newWord = getWords()
+
+            }while(completedWords.includes(newWord))
+
+            setWord(newWord)
+            setValidKeys ([])
+            setCompletedWords((prev) => [...prev, word])
+        }
+    }, [word, validKeys, completedWords])
     
 
     const handleKeyDown = (e)=>{
@@ -68,10 +87,9 @@ const App = () =>{
             </div>
             <div className='completed-words'>
                 <ol>
-                    <li>lua</li>
-                    <li>cidade</li>
-                    <li>carro</li>
-                    <li>bola</li>
+                    {completedWords.map((word)=>{
+                        return (<li key={word}>{word}</li>)
+                    })} 
                 </ol>
             </div>
 
